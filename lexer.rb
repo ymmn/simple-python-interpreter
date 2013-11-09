@@ -21,7 +21,7 @@ class Token
 	end
 
 	def ==(other)
-		return ((@name == other.name) and (@value == other.value))
+		return (self.class == other.class and (@name == other.name) and (@value == other.value))
 	end
 
 	alias_method :eql?, :==
@@ -61,7 +61,7 @@ end
 
 
 
-class TestBoundedQueue < Test::Unit::TestCase
+class TestLexer < Test::Unit::TestCase
 
 	def test_simple_num
 		assert_equal(scan("1")[0], Token.new(:constant, "1"))

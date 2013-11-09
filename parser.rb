@@ -57,8 +57,23 @@ class ParseTree
 		return (self.class == o.class and self.value == o.value and self.children == o.children)
 	end
 
+
 end
 
+def createParseTreeFromDictionary(dict, parent)
+	node_val = dict.keys[0]
+	children_list = dict[node_val]
+	node = ParseTree.new(nil, node_val, parent, nil)
+	node.children = []
+	children_list.each { |c| 
+		if c.class == Hash
+			node.children.push(createParseTreeFromDictionary(c, node))
+		else
+			node.children.push(c)
+		end
+	}
+	return node
+end
 
 def parse(tokens)
 
@@ -125,28 +140,22 @@ class TestParser < Test::Unit::TestCase
 	def test_simple
 		res = parse([Token.new(:constant, "1"), Token.new(:plus, "+"), Token.new(:constant, "2")])
 		wanted = {
-			:program => {
-				:expression => {
-					:math => {
-						:constant => "1",
-						:plus => "+",
-						:constant => "2"
-					}
-				}
-			}
+			:program => [
+				{:expression => [
+					{:math => [
+						{:constant => ["1"]},
+						{:plus => ["+"]},
+						{:constant => ["2"]}
+					]}
+				]}
+			]
 		}
 
-		ParseTree.new(
-					[ParseTree.new(
-						[ParseTree.new(
-							[ParseTree.new(["1"], :constant, nil, nil)],
-						:math, nil, nil)], 
-					:expression, nil, nil)], 
-				:program, nil, nil)
+		
 		puts 
 		puts res
 		puts
-		assert(res.to_s == wanted.to_s)
+		assert(createParseTreeFromDictionary(wanted, nil).to_s == wanted.to_s)
 	end
 
 end
