@@ -12,7 +12,9 @@ GRAMMAR = {
 		[:EPSILON]
 	],
 	:math => [
-		[:plus, :constant, :math],
+		[:plus, :math],
+		[:multiply, :math],
+		[:left_paren, :math, :right_paren, :math],
 		[:constant, :math],
 		[:EPSILON]
 	]
@@ -21,6 +23,9 @@ GRAMMAR = {
 TERMINALS = {
 	:constant => 1,
 	:plus => 2,
+	:multiply => 3,
+	:left_paren => 10,
+	:right_paren => 11,
 	:EPSILON => 4
 }
 

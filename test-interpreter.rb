@@ -8,10 +8,7 @@ class TestInterpreter < Test::Unit::TestCase
 			:program => [
 				{:expression => [
 					{:math => [
-						{:constant => ["1"]},
-						{:math => [
-							{:EPSILON => [0]}
-						]}
+						{:constant => ["1"]}
 					]}
 				]}
 			]
@@ -28,9 +25,8 @@ class TestInterpreter < Test::Unit::TestCase
 						{:constant => ["1"]},
 						{:math => [
 							{:plus => ["+"]},
-							{:constant => ["2"]},
 							{:math => [
-								{:EPSILON => [0]}
+								{:constant => ["2"]}
 							]}
 						]},
 					]}
@@ -39,6 +35,60 @@ class TestInterpreter < Test::Unit::TestCase
 		}
 		res = interpret(createParseTreeFromDictionary(wanted, nil))
 		assert(res == 3)
+	end
+
+	def test_simple_parens
+		wanted =  {
+			:program => [
+				{:expression => [
+					{:math => [
+						{:left_paren => ["("]},
+						{:math => [
+							{:constant => ["1"]},
+							{:math => [ 
+								{:plus => ["+"]},
+								{:math => [
+									{:constant => ["2"]}						
+								]}
+							]}
+						]},
+						{:right_paren => [")"]}
+					]}
+				]}
+			]
+		}
+
+		res = interpret(createParseTreeFromDictionary(wanted, nil))
+		assert(res == 3)
+
+		wanted = {
+			:program => [
+				{:expression => [
+					{:math => [
+						{:constant => ["3"]},
+						{:math => [
+							{:multiply => ["*"]},
+							{:math => [
+								{:left_paren => ["("]},
+								{:math => [
+									{:constant => ["1"]},
+									{:math => [ 
+										{:plus => ["+"]},
+										{:math => [
+											{:constant => ["2"]}						
+										]}
+									]}
+								]},
+								{:right_paren => [")"]}
+							]}
+						]}
+					]}
+				]}				
+			]
+		}
+
+		res = interpret(createParseTreeFromDictionary(wanted, nil))
+		assert(res == 9)
 	end
 
 end

@@ -7,13 +7,19 @@ def eval_constant(node)
 end
 
 def evaluate_math(node)
+	return lambda { |x| return x } if node == nil
+	puts 
+	puts node.to_s
+	puts 
 	fchild = node.children[0].value
-	if fchild == :EPSILON
-		return lambda { |x| return x }
-	elsif fchild == :plus
-		return lambda { |x| return evaluate_math(node.children[2]).call(x + eval_constant(node.children[1])) }
+	if fchild == :plus
+		return lambda { |x| return x + evaluate_math(node.children[1]) }
+	elsif fchild == :multiply
+		return lambda { |x| return x * evaluate_math(node.children[1]) }
+	elsif fchild == :left_paren
+		return evaluate_math(node.children[3]).call( evaluate_math(node.children[1]) ) 
 	elsif fchild == :constant
-		return evaluate_math(node.children[1]).call(eval_constant(node.children[0]))
+		return evaluate_math(node.children[1]).call( eval_constant(node.children[0]) )
 	end
 end
 

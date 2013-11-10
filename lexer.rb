@@ -33,7 +33,8 @@ TOKEN_DEFS = [
 	Token_Def.new(:right_paren, /\)/),
 	Token_Def.new(:constant, /\d+/),
 	Token_Def.new(:whitespace, /\s+/),
-	Token_Def.new(:plus, /\+/)
+	Token_Def.new(:plus, /\+/),
+	Token_Def.new(:multiply, /\*/)
 ]
 
 def scan(source_code)
@@ -51,7 +52,8 @@ def scan(source_code)
 
 			# push the token if anything matched
 			if i > start
-				tokenized.push(Token.new(td.name, source_code[start..(i-1)]))
+				# skip whitespace. it's a useless token
+				tokenized.push(Token.new(td.name, source_code[start..(i-1)])) if td.name != :whitespace
 				break
 			end
 		}
