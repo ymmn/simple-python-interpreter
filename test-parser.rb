@@ -7,14 +7,36 @@ class TestParser < Test::Unit::TestCase
 		res = parse([Token.new(:constant, "1")])
 		wanted = {
 			:program => [
-				{:expression => [
-					{:math => [
-						{:constant => ["1"]},
+				{:statement => [
+					{:expression => [
+						{:math => [
+							{:constant => ["1"]},
+						]}
 					]}
 				]}
 			]
 		}
 
+		ref = createParseTreeFromDictionary(wanted, nil)
+	
+		assert(ref.to_s == res.to_s)
+
+		res = parse([Token.new(:symbol, "a")])
+		wanted = {
+			:program => [
+				{:statement => [
+					{:expression => [
+						{:math => [
+							{:symbol => ["a"]},
+						]}
+					]}
+				]}
+			]
+		}
+
+		puts 
+		puts "RES"
+		puts res.to_s
 		ref = createParseTreeFromDictionary(wanted, nil)
 	
 		assert(ref.to_s == res.to_s)
@@ -24,14 +46,16 @@ class TestParser < Test::Unit::TestCase
 		res = parse([Token.new(:constant, "1"), Token.new(:plus, "+"), Token.new(:constant, "2")])
 		wanted = {
 			:program => [
-				{:expression => [
-					{:math => [
-						{:constant => ["1"]},
+				{:statement => [
+					{:expression => [
 						{:math => [
-							{:plus => ["+"]},
+							{:constant => ["1"]},
 							{:math => [
-								{:constant => ["2"]}						]},
-							]}
+								{:plus => ["+"]},
+								{:math => [
+									{:constant => ["2"]}						]},
+								]}
+						]}
 					]}
 				]}
 			]
@@ -47,39 +71,58 @@ class TestParser < Test::Unit::TestCase
 			 Token.new(:constant, "1"), Token.new(:plus, "+"), Token.new(:constant, "2"), Token.new(:right_paren, ")")])
 		wanted = {
 			:program => [
-				{:expression => [
-					{:math => [
-						{:constant => ["3"]},
+				{:statement => [
+					{:expression => [
 						{:math => [
-							{:multiply => ["*"]},
+							{:constant => ["3"]},
 							{:math => [
-								{:left_paren => ["("]},
+								{:multiply => ["*"]},
 								{:math => [
-									{:constant => ["1"]},
-									{:math => [ 
-										{:plus => ["+"]},
-										{:math => [
-											{:constant => ["2"]}						
+									{:left_paren => ["("]},
+									{:math => [
+										{:constant => ["1"]},
+										{:math => [ 
+											{:plus => ["+"]},
+											{:math => [
+												{:constant => ["2"]}						
+											]}
 										]}
-									]}
-								]},
-								{:right_paren => [")"]}
+									]},
+									{:right_paren => [")"]}
+								]}
 							]}
 						]}
+					]}				
 					]}
-				]}				
 			]
 		}
 			
 
 		ref = createParseTreeFromDictionary(wanted, nil)
-		puts 
-		puts "RES"
-		puts res.to_s
-		puts 
-		puts "REF"
-		puts ref.to_s
+		# puts 
+		# puts "RES"
+		# puts res.to_s
+		# puts 
+		# puts "REF"
+		# puts ref.to_s
 	
+		assert(ref.to_s == res.to_s)
+
+		res = parse([Token.new(:symbol, "a"), Token.new(:assign, "="), Token.new(:constant, "1")])
+		wanted = {
+			:program => [
+				{:statement => [
+					{:symbol => ["a"]},
+					{:assign => ["="]},
+					{:expression => [
+						{:math => [
+							{:constant => ["1"]}
+						]}
+					]}
+				]}
+			]
+		}
+		ref = createParseTreeFromDictionary(wanted, nil)
 		assert(ref.to_s == res.to_s)
 	end
 

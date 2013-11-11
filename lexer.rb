@@ -34,7 +34,9 @@ TOKEN_DEFS = [
 	Token_Def.new(:constant, /\d+/),
 	Token_Def.new(:whitespace, /\s+/),
 	Token_Def.new(:plus, /\+/),
-	Token_Def.new(:multiply, /\*/)
+	Token_Def.new(:multiply, /\*/),
+	Token_Def.new(:assign, /=/),
+	Token_Def.new(:symbol, /[a-zA-Z]\w*/)
 ]
 
 def scan(source_code)

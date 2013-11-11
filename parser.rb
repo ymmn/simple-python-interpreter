@@ -5,6 +5,10 @@ EOF = Token.new(:EOF, 5000)
 
 GRAMMAR = { 
 	:program => [
+		[:statement]
+	],
+	:statement => [
+		[:symbol, :assign, :expression],
 		[:expression]
 	],
 	:expression => [ 
@@ -12,6 +16,7 @@ GRAMMAR = {
 		[:EPSILON]
 	],
 	:math => [
+		[:symbol, :math],
 		[:plus, :math],
 		[:multiply, :math],
 		[:left_paren, :math, :right_paren, :math],
@@ -26,19 +31,22 @@ TERMINALS = {
 	:multiply => 3,
 	:left_paren => 10,
 	:right_paren => 11,
+	:symbol => 11,
+	:assign => 11,
 	:EPSILON => 4
 }
 
 
 class ParseTree
 
-	attr_accessor :children, :value, :parent, :rule_index, :stack_state
+	attr_accessor :children, :value, :parent, :rule_index, :stack_state, :tokens_state
 
-	def initialize(c, v, p, s)
+	def initialize(c, v, p, s, t=nil)
 		@children = c
 		@value = v
 		@parent = p
 		@stack_state = s
+		@tokens_state = t
 		@rule_index = 0
 	end
 
@@ -92,17 +100,21 @@ def parse(tokens)
 	focus = root
 	token = tokens.pop()
 	while true 
-		puts
-		puts "Token: #{token.name}. focus: #{focus}"
+		# puts
+		# puts "Token: #{token.name}. focus: #{focus}"
 		if token.name == :EOF and focus == nil
 			return root
 		elsif TERMINALS[focus.value] == nil and focus.rule_index < GRAMMAR[focus.value].length
 			# non-terminal
 			expanded = GRAMMAR[focus.value][focus.rule_index]
 			children = []
+			# we want to store the current token as well in case we need to backtrack
+			tokens.push(token)
 			expanded.each { |e|
-				children.push(ParseTree.new(nil, e, focus, stack.clone))
+				children.push(ParseTree.new(nil, e, focus, stack.clone, tokens.clone))
 			}
+			# pop out the extra token that we pushed for convenience
+			tokens.pop()
 			focus.children = children
 			focus.children.reverse.each { |e| 
 				stack.push(e)
@@ -113,14 +125,16 @@ def parse(tokens)
 			token = tokens.pop()
 			focus = stack.pop()
 		elsif focus.value == :EPSILON
-			puts "FOUND EPSILON!" if focus.value == 3
+			# puts "FOUND EPSILON!" if focus.value == 3
 			# remove from parse tree
 			focus.parent.parent.children.delete(focus.parent)
 			focus = stack.pop()
 		else
 			# backtrack
-			puts "backtracking!!!"
+			# puts "backtracking!!!"
 			stack = focus.stack_state
+			tokens = focus.tokens_state
+			token = tokens.pop()
 			focus = focus.parent
 			focus.rule_index += 1 if focus != nil
 		end

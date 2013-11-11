@@ -91,4 +91,35 @@ class TestInterpreter < Test::Unit::TestCase
 		assert(res == 9)
 	end
 
+	def test_simple_assignment
+		wanted = {
+			:program => [
+				{:statement => [
+					{:symbol => ["a"]},
+					{:assign => ["="]},
+					{:expression => [
+						{:math => [
+							{:constant => ["1"]}
+						]}
+					]}
+				]}
+			]
+		}
+		res = interpret(createParseTreeFromDictionary(wanted, nil))
+		wanted = {
+			:program => [
+				{:statement => [
+					{:expression => [
+						{:math => [
+							{:symbol => ["a"]},
+						]}
+					]}
+				]}
+			]
+		}
+		res = interpret(createParseTreeFromDictionary(wanted, nil))
+
+		assert(res == 1)
+	end
+
 end
