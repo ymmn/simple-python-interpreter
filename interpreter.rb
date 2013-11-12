@@ -9,7 +9,12 @@ def eval_constant(node)
 end
 
 def eval_symbol(node)
-	return $variables[node.children[0]]
+	varname = node.children[0]
+	if $variables.key?(varname)
+		return $variables[varname]
+	else
+		raise "#{varname} is undefined"
+	end
 end
 
 def evaluate_math(node)
