@@ -2,10 +2,18 @@ require "./lexer.rb"
 require "./parser.rb"
 
 $variables = {}
-# functions = {}
+$functions = {
+	"print" => :print
+}
 
 def eval_constant(node)
 	return node.children[0].to_i
+end
+
+def eval_function(node)
+	func_name = node.children[0].children[0]
+	args = interpret(node.children[2])
+	return method($functions[func_name]).call(args)
 end
 
 def eval_symbol(node)
@@ -42,6 +50,8 @@ def interpret(ptree)
 	elsif ptree.value == :statement
 		if ptree.children[0].value == :expression
 			return interpret(ptree.children[0])
+		elsif ptree.children[0].value == :function_call
+			return eval_function(ptree.children[0])
 		else
 			# must be an assignment
 			res = interpret(ptree.children[2])

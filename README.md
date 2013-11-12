@@ -7,7 +7,9 @@ TODO
 
 - [X] make a driver 
 - [ ] advanced assignment tests
-- [ ] support basic function calls
+- [X] support basic function calls
+- [ ] correctly support argument lists
+- [ ] support strings
 
 Issues
 

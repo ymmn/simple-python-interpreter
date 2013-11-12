@@ -34,9 +34,6 @@ class TestParser < Test::Unit::TestCase
 			]
 		}
 
-		puts 
-		puts "RES"
-		puts res.to_s
 		ref = createParseTreeFromDictionary(wanted, nil)
 	
 		assert(ref.to_s == res.to_s)
@@ -123,6 +120,32 @@ class TestParser < Test::Unit::TestCase
 			]
 		}
 		ref = createParseTreeFromDictionary(wanted, nil)
+		assert(ref.to_s == res.to_s)
+	end
+
+	def test_function_call
+		res = parse([Token.new(:symbol, "print"), Token.new(:left_paren, "("), Token.new(:constant, "1"), Token.new(:right_paren, ")")])
+		wanted = {
+			:program => [
+				{:statement => [
+					{:function_call => [
+						{:symbol => ["print"]},
+						{:left_paren => ["("]},
+						{:expression => [
+							{:math => [
+								{:constant => ["1"]}
+							]}
+						]},
+						{:right_paren => [")"]}
+					]}
+				]}
+			]
+		}
+		ref = createParseTreeFromDictionary(wanted, nil)
+
+		puts 
+		puts "RES"
+		puts res.to_s
 		assert(ref.to_s == res.to_s)
 	end
 

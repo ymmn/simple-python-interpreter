@@ -9,7 +9,11 @@ GRAMMAR = {
 	],
 	:statement => [
 		[:symbol, :assign, :expression],
+		[:function_call],
 		[:expression]
+	],
+	:function_call => [
+		[:symbol, :left_paren, :expression, :right_paren]
 	],
 	:expression => [ 
 		[:math],
