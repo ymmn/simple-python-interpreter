@@ -13,7 +13,14 @@ GRAMMAR = {
 		[:expression]
 	],
 	:function_call => [
-		[:symbol, :left_paren, :expression, :right_paren]
+		[:symbol, :left_paren, :argument_list, :right_paren]
+	],
+	:argument_list => [
+		[:expression, :_argument_list]
+	],
+	:_argument_list => [
+		[:comma, :expression, :_argument_list],
+		[:EPSILON]
 	],
 	:expression => [ 
 		[:math],
@@ -34,6 +41,7 @@ TERMINALS = {
 	:plus => 2,
 	:multiply => 3,
 	:left_paren => 10,
+	:comma => 10,
 	:right_paren => 11,
 	:symbol => 11,
 	:assign => 11,
@@ -105,7 +113,7 @@ def parse(tokens)
 	token = tokens.pop()
 	while true 
 		# puts
-		# puts "Token: #{token.name}. focus: #{focus}"
+		# puts "#{i}: Token: #{token.name}. focus: #{focus}"
 		if token.name == :EOF and focus == nil
 			return root
 		elsif TERMINALS[focus.value] == nil and focus.rule_index < GRAMMAR[focus.value].length

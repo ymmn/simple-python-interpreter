@@ -1,19 +1,35 @@
 require "./lexer.rb"
 require "./parser.rb"
 
+def func_add(a,b)
+	return a + b
+end
+
 $variables = {}
 $functions = {
-	"print" => :print
+	"print" => :print,
+	"add" => :func_add
 }
 
 def eval_constant(node)
 	return node.children[0].to_i
 end
 
+# takes an _argument_list node
+def _extract_args(node)
+	return [] if node == nil
+	return [interpret(node.children[1])] + _extract_args(node.children[2])
+end
+
+# takes an argument_list node
+def extract_args(node)
+	return [interpret(node.children[0])] + _extract_args(node.children[1])
+end
+
 def eval_function(node)
 	func_name = node.children[0].children[0]
-	args = interpret(node.children[2])
-	return method($functions[func_name]).call(args)
+	args = extract_args(node.children[2])
+	return method($functions[func_name]).call(*args)
 end
 
 def eval_symbol(node)

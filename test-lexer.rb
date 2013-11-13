@@ -16,6 +16,7 @@ class TestLexer < Test::Unit::TestCase
 			 Token.new(:constant, "1"), Token.new(:plus, "+"), Token.new(:constant, "2"), Token.new(:right_paren, ")")])
 		assert_equal(scan("a = 1"), [Token.new(:symbol, "a"), Token.new(:assign, "="), Token.new(:constant, "1")])
 		assert_equal(scan("print(1)"), [Token.new(:symbol, "print"), Token.new(:left_paren, "("), Token.new(:constant, "1"), Token.new(:right_paren, ")")])
+		assert_equal(scan("add(1,2)"), [Token.new(:symbol, "add"), Token.new(:left_paren, "("), Token.new(:constant, "1"), Token.new(:comma, ","), Token.new(:constant, "2"), Token.new(:right_paren, ")")])
 	end
 
 

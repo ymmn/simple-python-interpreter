@@ -8,7 +8,9 @@ TODO
 - [X] make a driver 
 - [ ] advanced assignment tests
 - [X] support basic function calls
-- [ ] correctly support argument lists
+- [X] correctly support argument lists
+- [ ] make function calls into expressions
+- [ ] allow definition of functions
 - [ ] support strings
 
 Issues

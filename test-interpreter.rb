@@ -123,16 +123,17 @@ class TestInterpreter < Test::Unit::TestCase
 	end
 
 	def test_simple_function_call
-
 		wanted = {
 			:program => [
 				{:statement => [
 					{:function_call => [
 						{:symbol => ["print"]},
 						{:left_paren => ["("]},
-						{:expression => [
-							{:math => [
-								{:constant => ["1"]}
+						{:argument_list => [
+							{:expression => [
+								{:math => [
+									{:constant => ["1"]}
+								]}
 							]}
 						]},
 						{:right_paren => [")"]}
@@ -144,7 +145,39 @@ class TestInterpreter < Test::Unit::TestCase
 		puts
 		p(res)
 		puts
-		assert(res == "")
+		assert(res == nil)
+
+		wanted = {
+			:program => [
+				{:statement => [
+					{:function_call => [
+						{:symbol => ["add"]},
+						{:left_paren => ["("]},
+						{:argument_list => [
+							{:expression => [
+								{:math => [
+									{:constant => ["1"]}
+								]}
+							]},
+							{:_argument_list => [
+								{:comma => [","]},
+								{:expression => [
+									{:math => [
+										{:constant => ["2"]}
+									]}
+								]}
+							]}
+						]},
+						{:right_paren => [")"]}
+					]}
+				]}
+			]
+		}
+		res = interpret(createParseTreeFromDictionary(wanted, nil))
+		puts
+		p(res)
+		puts
+		assert(res == 3)
 	end
 
 end
