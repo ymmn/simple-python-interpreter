@@ -9,7 +9,7 @@ TODO
 - [ ] advanced assignment tests
 - [X] support basic function calls
 - [X] correctly support argument lists
-- [ ] make function calls into expressions
+- [X] make function calls into expressions
 - [ ] allow definition of functions
 - [ ] support strings
 

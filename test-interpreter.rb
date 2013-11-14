@@ -126,17 +126,19 @@ class TestInterpreter < Test::Unit::TestCase
 		wanted = {
 			:program => [
 				{:statement => [
-					{:function_call => [
-						{:symbol => ["print"]},
-						{:left_paren => ["("]},
-						{:argument_list => [
-							{:expression => [
-								{:math => [
-									{:constant => ["1"]}
+					{:expression => [
+						{:function_call => [
+							{:symbol => ["print"]},
+							{:left_paren => ["("]},
+							{:argument_list => [
+								{:expression => [
+									{:math => [
+										{:constant => ["1"]}
+									]}
 								]}
-							]}
-						]},
-						{:right_paren => [")"]}
+							]},
+							{:right_paren => [")"]}
+						]}
 					]}
 				]}
 			]
@@ -146,29 +148,31 @@ class TestInterpreter < Test::Unit::TestCase
 		p(res)
 		puts
 		assert(res == nil)
-
+		
 		wanted = {
 			:program => [
 				{:statement => [
-					{:function_call => [
-						{:symbol => ["add"]},
-						{:left_paren => ["("]},
-						{:argument_list => [
-							{:expression => [
-								{:math => [
-									{:constant => ["1"]}
-								]}
-							]},
-							{:_argument_list => [
-								{:comma => [","]},
+					{:expression => [
+						{:function_call => [
+							{:symbol => ["add"]},
+							{:left_paren => ["("]},
+							{:argument_list => [
 								{:expression => [
 									{:math => [
-										{:constant => ["2"]}
+										{:constant => ["1"]}
+									]}
+								]},
+								{:_argument_list => [
+									{:comma => [","]},
+									{:expression => [
+										{:math => [
+											{:constant => ["2"]}
+										]}
 									]}
 								]}
-							]}
-						]},
-						{:right_paren => [")"]}
+							]},
+							{:right_paren => [")"]}
+						]}
 					]}
 				]}
 			]

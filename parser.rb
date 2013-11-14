@@ -9,8 +9,12 @@ GRAMMAR = {
 	],
 	:statement => [
 		[:symbol, :assign, :expression],
-		[:function_call],
 		[:expression]
+	],
+	:expression => [ 
+		[:function_call],
+		[:math],
+		[:EPSILON]
 	],
 	:function_call => [
 		[:symbol, :left_paren, :argument_list, :right_paren]
@@ -20,10 +24,6 @@ GRAMMAR = {
 	],
 	:_argument_list => [
 		[:comma, :expression, :_argument_list],
-		[:EPSILON]
-	],
-	:expression => [ 
-		[:math],
 		[:EPSILON]
 	],
 	:math => [

@@ -66,8 +66,6 @@ def interpret(ptree)
 	elsif ptree.value == :statement
 		if ptree.children[0].value == :expression
 			return interpret(ptree.children[0])
-		elsif ptree.children[0].value == :function_call
-			return eval_function(ptree.children[0])
 		else
 			# must be an assignment
 			res = interpret(ptree.children[2])
@@ -76,6 +74,8 @@ def interpret(ptree)
 		end
 	elsif ptree.value == :expression
 		return interpret(ptree.children[0])	
+	elsif ptree.value == :function_call
+		return eval_function(ptree)
 	elsif ptree.value == :math
 		return evaluate_math(ptree)
 	end

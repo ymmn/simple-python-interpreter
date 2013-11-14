@@ -128,17 +128,19 @@ class TestParser < Test::Unit::TestCase
 		wanted = {
 			:program => [
 				{:statement => [
-					{:function_call => [
-						{:symbol => ["print"]},
-						{:left_paren => ["("]},
-						{:argument_list => [
-							{:expression => [
-								{:math => [
-									{:constant => ["1"]}
+					{:expression => [
+						{:function_call => [
+							{:symbol => ["print"]},
+							{:left_paren => ["("]},
+							{:argument_list => [
+								{:expression => [
+									{:math => [
+										{:constant => ["1"]}
+									]}
 								]}
-							]}
-						]},
-						{:right_paren => [")"]}
+							]},
+							{:right_paren => [")"]}
+						]}
 					]}
 				]}
 			]
@@ -156,25 +158,27 @@ class TestParser < Test::Unit::TestCase
 		wanted = {
 			:program => [
 				{:statement => [
-					{:function_call => [
-						{:symbol => ["add"]},
-						{:left_paren => ["("]},
-						{:argument_list => [
-							{:expression => [
-								{:math => [
-									{:constant => ["1"]}
-								]}
-							]},
-							{:_argument_list => [
-								{:comma => [","]},
+					{:expression => [
+						{:function_call => [
+							{:symbol => ["add"]},
+							{:left_paren => ["("]},
+							{:argument_list => [
 								{:expression => [
 									{:math => [
-										{:constant => ["2"]}
+										{:constant => ["1"]}
+									]}
+								]},
+								{:_argument_list => [
+									{:comma => [","]},
+									{:expression => [
+										{:math => [
+											{:constant => ["2"]}
+										]}
 									]}
 								]}
-							]}
-						]},
-						{:right_paren => [")"]}
+							]},
+							{:right_paren => [")"]}
+						]}
 					]}
 				]}
 			]
