@@ -6,7 +6,7 @@ Python interpreter in Ruby
 TODO
 
 - [X] make a driver 
-- [ ] advanced assignment tests
+- [X] advanced assignment tests
 - [X] support basic function calls
 - [X] correctly support argument lists
 - [X] make function calls into expressions

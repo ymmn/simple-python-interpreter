@@ -4,6 +4,7 @@ require "./interpreter.rb"
 
 src = ""
 while src != 'exit'
+	print(">>> ")
 	src = gets
 	begin
 		res = interpret(parse(scan(src)))

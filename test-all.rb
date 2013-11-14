@@ -26,7 +26,21 @@ class TestAll < Test::Unit::TestCase
 	end
 
 	def test_easy_variable
-
+		src = "a = 1"
+		interpret(parse(scan(src)))
+		src = "b = 2*a"
+		interpret(parse(scan(src)))
+		src = "c = 2*b"
+		interpret(parse(scan(src)))
+		src = "a"		
+		res = interpret(parse(scan(src)))
+		assert(res == 1)
+		src = "b"		
+		res = interpret(parse(scan(src)))
+		assert(res == 2)
+		src = "c"		
+		res = interpret(parse(scan(src)))
+		assert(res == 4)
 	end
 
 end
