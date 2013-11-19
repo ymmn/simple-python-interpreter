@@ -36,27 +36,30 @@ TOKEN_DEFS = [
 	Token_Def.new(:plus, /\+/),
 	Token_Def.new(:comma, /,/),
 	Token_Def.new(:multiply, /\*/),
+	Token_Def.new(:equals, /==/),
 	Token_Def.new(:assign, /=/),
+	Token_Def.new(:if, /if/),
+	Token_Def.new(:colon, /:/),
 	Token_Def.new(:symbol, /[a-zA-Z]\w*/)
 ]
 
+# Tokenizes a source code string.
+# returns a list of Token items
 def scan(source_code)
 	tokenized = []
-	i = 0
-	while i < source_code.length
-		start = i
+	start = 0
+	while start < source_code.length
 		TOKEN_DEFS.each{ |td|
-			# maximal munch
-			match = source_code[start..i].match(td.regex)
-			while i < source_code.length and match != nil and match[0].length == (i - start + 1)
-				i += 1
-				match = source_code[start..i].match(td.regex)
-			end
 
-			# push the token if anything matched
-			if i > start
+			# match the token with the rest of the source string
+			rest = source_code[start..source_code.length]
+			match = rest.match(td.regex)
+
+			# make sure that the match we found is at the beginning 
+			if match != nil and source_code[start..start+(match.to_s.length - 1)] == match.to_s
 				# skip whitespace. it's a useless token
-				tokenized.push(Token.new(td.name, source_code[start..(i-1)])) if td.name != :whitespace
+				tokenized.push(Token.new(td.name, source_code[start..start+(match.to_s.length - 1)])) if td.name != :whitespace
+				start += match.to_s.length
 				break
 			end
 		}

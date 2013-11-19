@@ -9,7 +9,18 @@ GRAMMAR = {
 	],
 	:statement => [
 		[:symbol, :assign, :expression],
-		[:expression]
+		[:expression],
+		[:if_statement]
+	],
+	:if_statement => [
+		[:if, :bool_expr, :colon, :indented_statement]
+	],
+	:indented_statement => [
+		[:tab, :statement],
+		[:EPSILON]
+	],
+	:bool_expr => [
+
 	],
 	:expression => [ 
 		[:function_call],
@@ -85,6 +96,9 @@ class ParseTree
 
 end
 
+# a convenient method for testing
+# takes a dictionary representing a tree and makes
+# a parse tree
 def createParseTreeFromDictionary(dict, parent)
 	node_val = dict.keys[0]
 	children_list = dict[node_val]
@@ -100,6 +114,8 @@ def createParseTreeFromDictionary(dict, parent)
 	return node
 end
 
+# takes a list of tokens
+# returns a parse tree
 def parse(tokens)
 
 	# append EOF token to 

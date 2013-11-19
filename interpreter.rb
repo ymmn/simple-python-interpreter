@@ -11,6 +11,7 @@ $functions = {
 	"add" => :func_add
 }
 
+# takes a constant node
 def eval_constant(node)
 	return node.children[0].to_i
 end
@@ -26,12 +27,14 @@ def extract_args(node)
 	return [interpret(node.children[0])] + _extract_args(node.children[1])
 end
 
+# takes a function_call node
 def eval_function(node)
 	func_name = node.children[0].children[0]
 	args = extract_args(node.children[2])
 	return method($functions[func_name]).call(*args)
 end
 
+# takes a symbol node
 def eval_symbol(node)
 	varname = node.children[0]
 	if $variables.key?(varname)
@@ -41,6 +44,7 @@ def eval_symbol(node)
 	end
 end
 
+# takes a math node
 def evaluate_math(node)
 	return lambda { |x| return x } if node == nil
 	# puts 
@@ -60,6 +64,7 @@ def evaluate_math(node)
 	end
 end
 
+# takes a parse tree
 def interpret(ptree)
 	if ptree.value == :program
 		return interpret(ptree.children[0])

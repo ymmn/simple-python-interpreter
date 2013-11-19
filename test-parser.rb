@@ -191,4 +191,19 @@ class TestParser < Test::Unit::TestCase
 		assert(ref.to_s == res.to_s)
 	end
 
+	# def test_if_statement
+	# 	res = parse([Token.new(:if, "if"), Token.new(:constant, "1"), Token.new(:equals, "=="), Token.new(:constant, "1"), Token.new(:colon, ":")])
+	# 	wanted = {
+	# 		:program => [
+	# 			{:statement => [
+	# 				{:if_statement => [
+	# 					{:if => ["if"]}
+	# 					{:bool_expr => ["if"]}
+	# 					{:if => ["if"]}
+	# 				]}
+	# 			]}
+	# 		]
+	# 	}
+	# end
+
 end
