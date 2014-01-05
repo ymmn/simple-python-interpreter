@@ -1,40 +1,23 @@
 require "test/unit"
 require "./interpreter.rb"
+require "./test-programs.rb"
 
 class TestInterpreter < Test::Unit::TestCase
 
+	def interpret_tester(program_name)
+		prog = TEST_PROGRAMS[program_name]
+		interpreted = interpret(createParseTreeFromDictionary(prog[:parsed], nil))
+		expected = prog[:interpreted]
+
+		assert_equal( interpreted, expected )
+	end
+
 	def test_trivial
-		wanted = {
-			:program => [
-				{:expression => [
-					{:math => [
-						{:constant => ["1"]}
-					]}
-				]}
-			]
-		}
-		res = interpret(createParseTreeFromDictionary(wanted, nil))
-		assert(res == 1)
+		interpret_tester(:single_constant)
 	end	
 
 	def test_simple_addition
-		wanted = {
-			:program => [
-				{:expression => [
-					{:math => [
-						{:constant => ["1"]},
-						{:math => [
-							{:plus => ["+"]},
-							{:math => [
-								{:constant => ["2"]}
-							]}
-						]},
-					]}
-				]}
-			]
-		}
-		res = interpret(createParseTreeFromDictionary(wanted, nil))
-		assert(res == 3)
+		interpret_tester(:number_addition)
 	end
 
 	def test_simple_parens
@@ -61,51 +44,14 @@ class TestInterpreter < Test::Unit::TestCase
 		res = interpret(createParseTreeFromDictionary(wanted, nil))
 		assert(res == 3)
 
-		wanted = {
-			:program => [
-				{:expression => [
-					{:math => [
-						{:constant => ["3"]},
-						{:math => [
-							{:multiply => ["*"]},
-							{:math => [
-								{:left_paren => ["("]},
-								{:math => [
-									{:constant => ["1"]},
-									{:math => [ 
-										{:plus => ["+"]},
-										{:math => [
-											{:constant => ["2"]}						
-										]}
-									]}
-								]},
-								{:right_paren => [")"]}
-							]}
-						]}
-					]}
-				]}				
-			]
-		}
-
-		res = interpret(createParseTreeFromDictionary(wanted, nil))
-		assert(res == 9)
+		interpret_tester(:math_with_parens)
 	end
 
 	def test_simple_assignment
-		wanted = {
-			:program => [
-				{:statement => [
-					{:symbol => ["a"]},
-					{:assign => ["="]},
-					{:expression => [
-						{:math => [
-							{:constant => ["1"]}
-						]}
-					]}
-				]}
-			]
-		}
-		res = interpret(createParseTreeFromDictionary(wanted, nil))
+		interpret_tester(:basic_assignment)
+
+		interpret_tester(:number_addition)
+
 		wanted = {
 			:program => [
 				{:statement => [
@@ -123,65 +69,9 @@ class TestInterpreter < Test::Unit::TestCase
 	end
 
 	def test_simple_function_call
-		wanted = {
-			:program => [
-				{:statement => [
-					{:expression => [
-						{:function_call => [
-							{:symbol => ["print"]},
-							{:left_paren => ["("]},
-							{:argument_list => [
-								{:expression => [
-									{:math => [
-										{:constant => ["1"]}
-									]}
-								]}
-							]},
-							{:right_paren => [")"]}
-						]}
-					]}
-				]}
-			]
-		}
-		res = interpret(createParseTreeFromDictionary(wanted, nil))
-		puts
-		p(res)
-		puts
-		assert(res == nil)
-		
-		wanted = {
-			:program => [
-				{:statement => [
-					{:expression => [
-						{:function_call => [
-							{:symbol => ["add"]},
-							{:left_paren => ["("]},
-							{:argument_list => [
-								{:expression => [
-									{:math => [
-										{:constant => ["1"]}
-									]}
-								]},
-								{:_argument_list => [
-									{:comma => [","]},
-									{:expression => [
-										{:math => [
-											{:constant => ["2"]}
-										]}
-									]}
-								]}
-							]},
-							{:right_paren => [")"]}
-						]}
-					]}
-				]}
-			]
-		}
-		res = interpret(createParseTreeFromDictionary(wanted, nil))
-		puts
-		p(res)
-		puts
-		assert(res == 3)
+		interpret_tester(:single_arg_func_call)
+
+		interpret_tester(:multi_arg_func_call)
 	end
 
 end

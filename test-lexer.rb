@@ -1,23 +1,38 @@
 require "test/unit"
 require "./lexer.rb"
+require "./test-programs.rb"
+
 
 class TestLexer < Test::Unit::TestCase
 
+	def lex_tester(program_name)
+		prog = TEST_PROGRAMS[program_name]
+		scanned = scan(prog[:src])
+		expected = prog[:tokenized]
+
+		assert_equal( scanned, expected )
+	end
+
 	def test_simple_num
-		assert_equal(scan("1")[0], Token.new(:constant, "1"))
+		lex_tester(:single_constant)
 		assert_equal(scan("1234")[0], Token.new(:constant, "1234"))
 	end	
 
 	def test_simple_mixed
 		assert_equal(scan("()"), [Token.new(:left_paren, "("), Token.new(:right_paren, ")")])
 		assert_equal(scan("(123)"), [Token.new(:left_paren, "("), Token.new(:constant, "123"), Token.new(:right_paren, ")")])
-		assert_equal(scan("1 + 2"), [Token.new(:constant, "1"), Token.new(:plus, "+"), Token.new(:constant, "2")])
-		assert_equal(scan("3*(1+2)"), [Token.new(:constant, "3"), Token.new(:multiply, "*"), Token.new(:left_paren, "("),
-			 Token.new(:constant, "1"), Token.new(:plus, "+"), Token.new(:constant, "2"), Token.new(:right_paren, ")")])
-		assert_equal(scan("a = 1"), [Token.new(:symbol, "a"), Token.new(:assign, "="), Token.new(:constant, "1")])
-		assert_equal(scan("print(1)"), [Token.new(:symbol, "print"), Token.new(:left_paren, "("), Token.new(:constant, "1"), Token.new(:right_paren, ")")])
-		assert_equal(scan("add(1,2)"), [Token.new(:symbol, "add"), Token.new(:left_paren, "("), Token.new(:constant, "1"), Token.new(:comma, ","), Token.new(:constant, "2"), Token.new(:right_paren, ")")])
-		assert_equal(scan("if 1 == 1:"), [Token.new(:if, "if"), Token.new(:constant, "1"), Token.new(:equals, "=="), Token.new(:constant, "1"), Token.new(:colon, ":")])
+
+		lex_tester(:number_addition)	
+
+		lex_tester(:math_with_parens)	
+
+		lex_tester(:basic_assignment)
+
+		lex_tester(:single_arg_func_call)
+
+		lex_tester(:multi_arg_func_call)
+
+		lex_tester(:trivial_if)
 	end
 
 

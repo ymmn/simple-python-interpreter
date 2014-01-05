@@ -7,6 +7,7 @@ Run by executing "ruby driver.rb"
 
 TODO
 
+- [X] Rewrite tests -- 30 -- 50
 - [X] make a driver 
 - [X] advanced assignment tests
 - [X] support basic function calls
