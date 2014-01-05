@@ -8,24 +8,28 @@ GRAMMAR = {
 		[:statement]
 	],
 	:statement => [
-		[:symbol, :assign, :expression],
+		[:assignment],
 		[:expression],
 		[:if_statement]
 	],
+	:assignment => [
+		[:symbol, :assign, :expression]
+	],
 	:if_statement => [
-		[:if, :bool_expr, :colon, :indented_statement]
+		[:if, :boolean_expr, :colon, :indented_statement]
 	],
 	:indented_statement => [
 		[:tab, :statement],
 		[:EPSILON]
 	],
-	:bool_expr => [
-
-	],
 	:expression => [ 
 		[:function_call],
 		[:math],
+		[:boolean_expr],
 		[:EPSILON]
+	],
+	:boolean_expr => [
+		[:expression, :equals, :expression]
 	],
 	:function_call => [
 		[:symbol, :left_paren, :argument_list, :right_paren]
@@ -49,6 +53,7 @@ GRAMMAR = {
 
 TERMINALS = {
 	:constant => 1,
+	:equals => 50,
 	:plus => 2,
 	:multiply => 3,
 	:left_paren => 10,
@@ -116,7 +121,7 @@ end
 
 # takes a list of tokens
 # returns a parse tree
-def parse(tokens)
+def parse(tokens, debug=false)
 
 	# append EOF token to 
 	tokens.push(EOF)
@@ -127,13 +132,27 @@ def parse(tokens)
 	root = ParseTree.new(nil, :program, nil, stack.clone)
 	focus = root
 	token = tokens.pop()
+	i = 0
 	while true 
-		# puts
-		# puts "#{i}: Token: #{token.name}. focus: #{focus}"
+		if debug 
+			puts
+			puts "#{i}: Token: #{token.name}. focus: #{focus}"
+			puts "STACK"
+			stack.each do |s|
+				if s == nil
+					puts "nil"
+				else
+					puts s.to_s
+				end
+			end
+			i += 1
+		end
+
+		# parsed everything successfully!
 		if token.name == :EOF and focus == nil
 			return root
+		# we are currently at a non-terminal, so expand
 		elsif TERMINALS[focus.value] == nil and focus.rule_index < GRAMMAR[focus.value].length
-			# non-terminal
 			expanded = GRAMMAR[focus.value][focus.rule_index]
 			children = []
 			# we want to store the current token as well in case we need to backtrack
@@ -148,18 +167,36 @@ def parse(tokens)
 				stack.push(e)
 			}
 			focus = stack.pop()
+		# the terminal matches the focus, so move on to next terminal
 		elsif token.name == focus.value
 			focus.children = [token.value]
 			token = tokens.pop()
 			focus = stack.pop()
+		# at an epsilon, so move on to next focus
 		elsif focus.value == :EPSILON
-			# puts "FOUND EPSILON!" if focus.value == 3
+			puts "FOUND EPSILON!" if debug
 			# remove from parse tree
 			focus.parent.parent.children.delete(focus.parent)
-			focus = stack.pop()
+
+			new_focus = stack.pop()
+
+			# edge case: the new focus is nil and yet we still have more tokens
+			if new_focus == nil and token.name != :EOF
+				# TO REFACTOR
+				puts "backtracking!!!" if debug
+				stack = focus.stack_state
+				tokens = focus.tokens_state
+				token = tokens.pop()
+				focus = focus.parent
+				focus.rule_index += 1 if focus != nil
+			else
+				focus = new_focus
+			end
+
+		# focus is at a terminal, but doesn't match the token.  Therefore, 
+		# we have to backtrack
 		else
-			# backtrack
-			# puts "backtracking!!!"
+			puts "backtracking!!!" if debug
 			stack = focus.stack_state
 			tokens = focus.tokens_state
 			token = tokens.pop()

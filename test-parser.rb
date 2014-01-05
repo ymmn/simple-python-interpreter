@@ -4,9 +4,9 @@ require "./test-programs.rb"
 
 class TestParser < Test::Unit::TestCase
 
-	def parse_tester(program_name)
+	def parse_tester(program_name, debug=false)
 		prog = TEST_PROGRAMS[program_name]
-		parsed = parse(prog[:tokenized])
+		parsed = parse(prog[:tokenized], debug)
 		expected = createParseTreeFromDictionary(prog[:parsed], nil)
 
 		assert_equal( parsed.to_s, expected.to_s )
@@ -39,6 +39,8 @@ class TestParser < Test::Unit::TestCase
 		parse_tester(:math_with_parens)
 
 		parse_tester(:basic_assignment)
+
+		parse_tester(:boolean_statement)
 	end
 
 	def test_function_call

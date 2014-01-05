@@ -83,11 +83,13 @@ TEST_PROGRAMS = {
 		:parsed => {
 			:program => [
 				{:statement => [
-					{:symbol => ["a"]},
-					{:assign => ["="]},
-					{:expression => [
-						{:math => [
-							{:constant => ["1"]}
+					{:assignment => [
+						{:symbol => ["a"]},
+						{:assign => ["="]},
+						{:expression => [
+							{:math => [
+								{:constant => ["1"]}
+							]}
 						]}
 					]}
 				]}
@@ -158,10 +160,39 @@ TEST_PROGRAMS = {
 		:interpreted => 3
 	},
 
+	# boolean statement
+	:boolean_statement => {
+		:src => "1 == 1",
+		:tokenized => [Token.new(:constant, "1"), Token.new(:equals, "=="), Token.new(:constant, "1")],
+		:parsed => {
+			:program => [
+				{:statement => [
+					{:expression => [
+						{:boolean_expr => [
+							{:expression => [
+								{:math => [
+									{:constant => ["1"]},
+								]}
+							]},
+							{:equals => ["=="]},
+							{:expression => [
+								{:math => [
+									{:constant => ["1"]},
+								]}
+							]}
+						]}
+					]}
+				]}
+			]
+		},
+		:interpreted => true
+	},
+
+
 	# trivial if statement
 	:trivial_if => {
-		:src => "if 1 == 1:",
-		:tokenized => [Token.new(:if, "if"), Token.new(:constant, "1"), Token.new(:equals, "=="), Token.new(:constant, "1"), Token.new(:colon, ":")]
+		:src => "if 1 == 1:\n\t1",
+		:tokenized => [Token.new(:if, "if"), Token.new(:constant, "1"), Token.new(:equals, "=="), Token.new(:constant, "1"), Token.new(:colon, ":"), Token.new(:newline, "\n"), Token.new(:indent, "\t"), Token.new(:constant, "1")]
 	}
 
 

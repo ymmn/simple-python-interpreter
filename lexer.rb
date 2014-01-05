@@ -32,6 +32,8 @@ TOKEN_DEFS = [
 	Token_Def.new(:left_paren, /\(/),
 	Token_Def.new(:right_paren, /\)/),
 	Token_Def.new(:constant, /\d+/),
+	Token_Def.new(:newline, /\n/),
+	Token_Def.new(:indent, /\t/),
 	Token_Def.new(:whitespace, /\s+/),
 	Token_Def.new(:plus, /\+/),
 	Token_Def.new(:comma, /,/),

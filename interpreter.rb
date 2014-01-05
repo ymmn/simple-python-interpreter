@@ -69,16 +69,21 @@ def interpret(ptree)
 	if ptree.value == :program
 		return interpret(ptree.children[0])
 	elsif ptree.value == :statement
-		if ptree.children[0].value == :expression
-			return interpret(ptree.children[0])
+		return interpret(ptree.children[0])
+	elsif ptree.value == :boolean_expr
+		left_val = interpret(ptree.children[0])
+		right_val = interpret(ptree.children[2])
+		if left_val == right_val
+			return true
 		else
-			# must be an assignment
-			res = interpret(ptree.children[2])
-			$variables[ptree.children[0].children[0]] = res
-			return ""
+			return false
 		end
 	elsif ptree.value == :expression
 		return interpret(ptree.children[0])	
+	elsif ptree.value == :assignment
+		res = interpret(ptree.children[2])
+		$variables[ptree.children[0].children[0]] = res
+		return ""
 	elsif ptree.value == :function_call
 		return eval_function(ptree)
 	elsif ptree.value == :math

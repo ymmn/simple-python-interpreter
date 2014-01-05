@@ -32,6 +32,8 @@ class TestLexer < Test::Unit::TestCase
 
 		lex_tester(:multi_arg_func_call)
 
+		lex_tester(:boolean_statement)
+
 		lex_tester(:trivial_if)
 	end
 

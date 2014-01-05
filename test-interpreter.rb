@@ -74,4 +74,8 @@ class TestInterpreter < Test::Unit::TestCase
 		interpret_tester(:multi_arg_func_call)
 	end
 
+	def test_boolean
+		interpret_tester(:boolean_statement)
+	end
+
 end
