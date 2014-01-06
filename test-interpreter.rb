@@ -4,12 +4,16 @@ require "./test-programs.rb"
 
 class TestInterpreter < Test::Unit::TestCase
 
+	def setup
+		@parser = Parser.new
+	end
+
 	def interpret_tester(program_name)
 		prog = TEST_PROGRAMS[program_name]
-		interpreted = interpret(createParseTreeFromDictionary(prog[:parsed], nil))
+		interpreted = interpret(@parser.createParseTreeFromDictionary(prog[:parsed], nil))
 		expected = prog[:interpreted]
 
-		assert_equal( interpreted, expected )
+		assert_equal( expected, interpreted )
 	end
 
 	def test_trivial
@@ -21,37 +25,16 @@ class TestInterpreter < Test::Unit::TestCase
 	end
 
 	def test_simple_parens
-		wanted =  {
-			:program => [
-				{:expression => [
-					{:math => [
-						{:left_paren => ["("]},
-						{:math => [
-							{:constant => ["1"]},
-							{:math => [ 
-								{:plus => ["+"]},
-								{:math => [
-									{:constant => ["2"]}						
-								]}
-							]}
-						]},
-						{:right_paren => [")"]}
-					]}
-				]}
-			]
-		}
-
-		res = interpret(createParseTreeFromDictionary(wanted, nil))
-		assert(res == 3)
-
 		interpret_tester(:math_with_parens)
 	end
 
 	def test_simple_assignment
-		interpret_tester(:basic_assignment)
-
 		interpret_tester(:number_addition)
 
+
+		interpret_tester(:basic_assignment)
+
+		# now confirm that the variable retains the assigned value
 		wanted = {
 			:program => [
 				{:statement => [
@@ -63,7 +46,7 @@ class TestInterpreter < Test::Unit::TestCase
 				]}
 			]
 		}
-		res = interpret(createParseTreeFromDictionary(wanted, nil))
+		res = interpret(@parser.createParseTreeFromDictionary(wanted, nil))
 
 		assert(res == 1)
 	end
@@ -74,8 +57,16 @@ class TestInterpreter < Test::Unit::TestCase
 		interpret_tester(:multi_arg_func_call)
 	end
 
-	def test_boolean
+	def test_mixed
 		interpret_tester(:boolean_statement)
+
+		interpret_tester(:trivial_true_if)
+
+		interpret_tester(:trivial_false_if)
+
+		interpret_tester(:multiline_if)
+
+		interpret_tester(:while_loop)
 	end
 
 end

@@ -4,33 +4,20 @@ require "./test-programs.rb"
 
 class TestParser < Test::Unit::TestCase
 
+	def setup
+		@parser = Parser.new
+	end
+
 	def parse_tester(program_name, debug=false)
 		prog = TEST_PROGRAMS[program_name]
-		parsed = parse(prog[:tokenized], debug)
-		expected = createParseTreeFromDictionary(prog[:parsed], nil)
+		parsed = @parser.parse(prog[:tokenized], debug)
+		expected = @parser.createParseTreeFromDictionary(prog[:parsed], nil)
 
-		assert_equal( parsed.to_s, expected.to_s )
+		assert_equal( expected.to_s, parsed.to_s )
 	end
 
 	def test_trivial
 		parse_tester(:single_constant)
-
-		res = parse([Token.new(:symbol, "a")])
-		wanted = {
-			:program => [
-				{:statement => [
-					{:expression => [
-						{:math => [
-							{:symbol => ["a"]},
-						]}
-					]}
-				]}
-			]
-		}
-
-		ref = createParseTreeFromDictionary(wanted, nil)
-	
-		assert(ref.to_s == res.to_s)
 	end	
 
 	def test_simple
@@ -49,19 +36,15 @@ class TestParser < Test::Unit::TestCase
 		parse_tester(:multi_arg_func_call)
 	end
 
-	# def test_if_statement
-	# 	res = parse([Token.new(:if, "if"), Token.new(:constant, "1"), Token.new(:equals, "=="), Token.new(:constant, "1"), Token.new(:colon, ":")])
-	# 	wanted = {
-	# 		:program => [
-	# 			{:statement => [
-	# 				{:if_statement => [
-	# 					{:if => ["if"]}
-	# 					{:bool_expr => ["if"]}
-	# 					{:if => ["if"]}
-	# 				]}
-	# 			]}
-	# 		]
-	# 	}
-	# end
+	def test_if_statement
+		parse_tester(:trivial_true_if)
+
+		parse_tester(:multiline_if)
+
+	end
+
+	def test_loops
+		parse_tester(:while_loop)
+	end
 
 end

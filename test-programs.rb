@@ -28,7 +28,7 @@ TEST_PROGRAMS = {
 					{:expression => [
 						{:math => [
 							{:constant => ["1"]},
-							{:math => [
+							{:_math => [
 								{:plus => ["+"]},
 								{:math => [
 									{:constant => ["2"]}						]},
@@ -52,13 +52,13 @@ TEST_PROGRAMS = {
 					{:expression => [
 						{:math => [
 							{:constant => ["3"]},
-							{:math => [
+							{:_math => [
 								{:multiply => ["*"]},
 								{:math => [
 									{:left_paren => ["("]},
 									{:math => [
 										{:constant => ["1"]},
-										{:math => [ 
+										{:_math => [ 
 											{:plus => ["+"]},
 											{:math => [
 												{:constant => ["2"]}						
@@ -167,18 +167,16 @@ TEST_PROGRAMS = {
 		:parsed => {
 			:program => [
 				{:statement => [
-					{:expression => [
-						{:boolean_expr => [
-							{:expression => [
-								{:math => [
-									{:constant => ["1"]},
-								]}
-							]},
-							{:equals => ["=="]},
-							{:expression => [
-								{:math => [
-									{:constant => ["1"]},
-								]}
+					{:boolean_expr => [
+						{:expression => [
+							{:math => [
+								{:constant => ["1"]},
+							]}
+						]},
+						{:equals => ["=="]},
+						{:expression => [
+							{:math => [
+								{:constant => ["1"]},
 							]}
 						]}
 					]}
@@ -190,9 +188,137 @@ TEST_PROGRAMS = {
 
 
 	# trivial if statement
-	:trivial_if => {
-		:src => "if 1 == 1:\n\t1",
-		:tokenized => [Token.new(:if, "if"), Token.new(:constant, "1"), Token.new(:equals, "=="), Token.new(:constant, "1"), Token.new(:colon, ":"), Token.new(:newline, "\n"), Token.new(:indent, "\t"), Token.new(:constant, "1")]
+	:trivial_true_if => {
+		:src => "if True: 1",
+		:tokenized => [Token.new(:if, "if"), Token.new(:boolean, "True"), Token.new(:colon, ":"), Token.new(:constant, "1")],
+		:parsed => {
+			:program => [
+				{:statement => [
+					{:if_block =>[
+						{:if => ["if"]},
+						{:boolean_expr => [
+							{:boolean => ["True"]}
+						]},
+						{:colon => [":"]},
+						{:block => [
+							{:statement => [
+								{:expression => [
+									{:math => [
+										{:constant => ["1"]},
+									]}
+								]}
+							]}
+						]}
+					]}
+				]}
+			]
+		},
+		:interpreted => [1]
+	},
+
+	:trivial_false_if => {
+		:src => "if False: 1",
+		:tokenized => [Token.new(:if, "if"), Token.new(:boolean, "False"), Token.new(:colon, ":"), Token.new(:constant, "1")],
+		:parsed => {
+			:program => [
+				{:statement => [
+					{:if_block =>[
+						{:if => ["if"]},
+						{:boolean_expr => [
+							{:boolean => ["False"]}
+						]},
+						{:colon => [":"]},
+						{:block => [
+							{:statement => [
+								{:expression => [
+									{:math => [
+										{:constant => ["1"]},
+									]}
+								]}
+							]}
+						]}
+					]}
+				]}
+			]
+		},
+		:interpreted => ""
+	},
+
+	# if statement with multiple lines
+	:multiline_if => {
+		:src => "if True:\n1\n2",
+		:tokenized => [Token.new(:if, "if"), Token.new(:boolean, "True"), Token.new(:colon, ":"), Token.new(:newline, "\n"), Token.new(:constant, "1"), Token.new(:newline, "\n"), Token.new(:constant, "2")],
+		:parsed => {
+			:program => [
+				{:statement => [
+					{:if_block =>[
+						{:if => ["if"]},
+						{:boolean_expr => [
+							{:boolean => ["True"]}
+						]},
+						{:colon => [":"]},
+						{:block => [
+							{:newline => ["\n"]},
+							{:block => [
+								{:statement => [
+									{:expression => [
+										{:math => [
+											{:constant => ["1"]},
+										]}
+									]}
+								]},
+								{:_block => [
+									{:newline => ["\n"]},
+									{:statement => [
+										{:expression => [
+											{:math => [
+												{:constant => ["2"]},
+											]}
+										]}
+									]}
+								]}
+							]}
+						]}
+					]}
+				]}
+			]
+		},
+		:interpreted => [1, 2]
+	},
+
+	:while_loop => {
+		:src => "while False:\n1",
+		:tokenized => [Token.new(:while, "while"), Token.new(:boolean, "False"), Token.new(:colon, ":"), Token.new(:newline, "\n"), Token.new(:constant, "1")],
+		:parsed => {
+			:program => [
+				{:statement => [
+					{:while_block =>[
+						{:while => ["while"]},
+						{:boolean_expr => [
+							{:boolean => ["False"]}
+						]},
+						{:colon => [":"]},
+						{:block => [
+							{:newline => ["\n"]},
+							{:block => [
+								{:statement => [
+									{:expression => [
+										{:math => [
+											{:constant => ["1"]},
+										]}
+									]}
+								]}
+							]}
+						]}
+					]}
+				]}
+			]
+		},
+		:interpreted => []	
+	},
+
+	:nested_block => {
+
 	}
 
 

@@ -10,7 +10,7 @@ class TestLexer < Test::Unit::TestCase
 		scanned = scan(prog[:src])
 		expected = prog[:tokenized]
 
-		assert_equal( scanned, expected )
+		assert_equal( expected, scanned )
 	end
 
 	def test_simple_num
@@ -18,13 +18,15 @@ class TestLexer < Test::Unit::TestCase
 		assert_equal(scan("1234")[0], Token.new(:constant, "1234"))
 	end	
 
-	def test_simple_mixed
-		assert_equal(scan("()"), [Token.new(:left_paren, "("), Token.new(:right_paren, ")")])
-		assert_equal(scan("(123)"), [Token.new(:left_paren, "("), Token.new(:constant, "123"), Token.new(:right_paren, ")")])
-
+	def test_math
 		lex_tester(:number_addition)	
 
 		lex_tester(:math_with_parens)	
+	end
+
+	def test_simple_mixed
+		assert_equal(scan("()"), [Token.new(:left_paren, "("), Token.new(:right_paren, ")")])
+		assert_equal(scan("(123)"), [Token.new(:left_paren, "("), Token.new(:constant, "123"), Token.new(:right_paren, ")")])
 
 		lex_tester(:basic_assignment)
 
@@ -34,7 +36,11 @@ class TestLexer < Test::Unit::TestCase
 
 		lex_tester(:boolean_statement)
 
-		lex_tester(:trivial_if)
+		lex_tester(:trivial_true_if)
+
+		lex_tester(:multiline_if)
+
+		lex_tester(:while_loop)
 	end
 
 
