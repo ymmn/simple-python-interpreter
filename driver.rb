@@ -1,6 +1,6 @@
-require "./lexer.rb"
-require "./parser.rb"
-require "./interpreter.rb"
+require "./src/lexer.rb"
+require "./src/parser.rb"
+require "./src/interpreter.rb"
 
 class Driver 
 
